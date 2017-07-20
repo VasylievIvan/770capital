@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import './index.css'; 
 import './style770.css';
 import App from './App';
@@ -46,21 +47,71 @@ import mainAdvShadow from './img/main-adv-shadow.png';
 import rateLine from './img/rate-line.png';
 import notebooks from './img/notebooks.png';
 import mainButton from './img/button.png';
+import menuArrow from './img/menu-arrow.png';
 
 
 
 class Header extends React.Component{
+	constructor(props) {
+    super(props);
+    this.state = {showMainMenu: false,
+    			menuParams : {
+    				'0' : false,
+    				'1' : false,
+    				'2' : false,
+    				'3' : false
+    			}};
+    this.handleButtonMouseEnter = this.handleButtonMouseEnter.bind(this);
+    this.handleMenuMouseLeave = this.handleMenuMouseLeave.bind(this);
+    this.handleButtonClick = this.handleButtonClick.bind(this);    
+  	}
+
+  	handleButtonMouseEnter() {
+    //this.setState({showMainMenu: true});
+  	}
+  	handleMenuMouseLeave() {
+    //this.setState({showMainMenu: false});
+  	}
+  	handleButtonClick() {
+  		this.setState({showMainMenu: this.state.showMainMenu === false});
+  		console.log("click");
+  	}
 	render() {
 		return (
 			<div className="header">
-				<img src={menuButton} alt="" className="menu-button" />
+			{this.state.showMainMenu ? <MenuMain subMenuVisible = {this.state.menuParams} onMouseLeave={this.handleMenuMouseLeave} /> : <div/>}
+				<img src={menuButton} alt="" className="menu-button" onClick={this.handleButtonClick} onMouseEnter={this.handleButtonMouseEnter}/>
 				<img src={logo} alt="" className="logo" />
 				<ul className="menu">
-					<li><a href="#" className="active">Компания</a></li>
+					<li><a href="#" className="active" onClick={() => this.setState({showMainMenu:true,
+																						menuParams : {
+																			    				'0' : true,
+																			    				'1' : false,
+																			    				'2' : false,
+																			    				'3' : false
+																			    			}})}>Компания</a></li>
 					<li><a href="#">Платформа</a></li>
-					<li><a href="#">Обучение</a></li>
-					<li><a href="#">Аналитика</a></li>
-					<li><a href="#">Инструменты</a></li>
+					<li onClick={() => this.setState({showMainMenu:true,
+																						menuParams : {
+																			    				'0' : false,
+																			    				'1' : true,
+																			    				'2' : false,
+																			    				'3' : false
+																			    			}})}><a href="#">Обучение</a></li>
+					<li onClick={() => this.setState({showMainMenu:true,
+																						menuParams : {
+																			    				'0' : false,
+																			    				'1' : false,
+																			    				'2' : true,
+																			    				'3' : false
+																			    			}})}><a href="#">Аналитика</a></li>
+					<li onClick={() => this.setState({showMainMenu:true,
+																						menuParams : {
+																			    				'0' : false,
+																			    				'1' : false,
+																			    				'2' : false,
+																			    				'3' : true
+																			    			}})}><a href="#">Инструменты</a></li>
 				</ul>
 				<div className="contact">
 					<img src={phoneIcon} alt=""/>
@@ -217,23 +268,23 @@ class DoubleBlock extends React.Component {
 						<div className="experts">
 						<h2>ЭКСПЕРТНАЯ АНАЛИТИКА НАШИХ ЭКСПЕРТОВ:</h2>
 							<div className="expert">
-								<img src={expert1} alt=""/>
+								
 								<div className="data">
-									<p className="date">11 апреля, 2017 (GMT +3) | Название рубрики</p>
+									<p className="date">11 апреля | Драгоценные металлы<img src={expert1} alt=""/>Василий Жуков</p>
 									<p className="text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quo, ipsum!</p>
 								</div>
 							</div>
 							<div className="expert">
-								<img src={expert2} alt=""/>
+								
 								<div className="data">
-									<p className="date">11 апреля, 2017 (GMT +3) | Название рубрики</p>
+									<p className="date">11 апреля | Драгоценные металлы<img src={expert2} alt=""/>Василий Жуков</p>
 									<p className="text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Architecto, temporibus.</p>
 								</div>
 							</div>
 							<div className="expert">
-								<img src={expert3} alt=""/>
+								
 								<div className="data">
-									<p className="date">11 апреля, 2017 (GMT +3) | Название рубрики</p>
+									<p className="date">11 апреля | Драгоценные металлы<img src={expert3} alt=""/>Василий Жуков</p>
 									<p className="text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Esse, non!</p>
 								</div>
 							</div>
@@ -242,7 +293,7 @@ class DoubleBlock extends React.Component {
 					</div>
 					<div className="right-block">
 						<div className="right-block-content">
-							<h2>НОВОСТЬ ВЛИЯЮЩАЯ НА РЫНОК ОЖИДАЕТСЯ ЧЕРЕЗ:</h2>
+							<h2>ГОРЯЧАЯ НОВОСТЬ ОЖИДАЕТСЯ ЧЕРЕЗ</h2>
 							<div className="timer">
 								<p>23:45:03</p>
 							</div>
@@ -395,6 +446,194 @@ class Main extends React.Component {
 	}
 }
 
+class MenuMain extends React.Component {
+	constructor(props) {
+    super(props);
+    this.handleMenuHeaderClick = this.handleMenuHeaderClick.bind(this);    
+  	}
+
+
+  	handleMenuHeaderClick(param) {
+  		var item = document.getElementsByClassName("subMenu")[param];
+  		item.classList.remove("subMenuInitial");
+    	if(!this.props.subMenuVisible[param]){
+    		item.classList.remove("subMenuHidden");
+    		item.classList.add("subMenuShown");
+    		this.props.subMenuVisible[param] = true;
+    	} else {
+    		item.classList.add("subMenuHidden");
+    		item.classList.remove("subMenuShown");
+    		this.props.subMenuVisible[param] = false;
+    	}
+  	}
+
+  	componentDidUpdate() {
+  				var array = this.props.subMenuVisible;
+				console.log(array);
+				var i;
+				for(i = 0; i<4; i++) {
+					//if(array[i]) {
+						var param = i;
+						var item = document.getElementsByClassName("subMenu")[param];
+						
+				    	if(this.props.subMenuVisible[param]){
+				    		item.classList.remove("subMenuInitial");
+				    		item.classList.remove("subMenuHidden");
+				    		item.classList.add("subMenuShown");
+				    		this.props.subMenuVisible[param] = true;
+				    	} else {
+				    		/*item.classList.add("subMenuHidden");
+				    		item.classList.remove("subMenuShown");
+				    		this.props.subMenuVisible[param] = false;*/
+				    	}
+					//}
+				}
+  		}
+
+  	componentDidMount() {
+  				var array = this.props.subMenuVisible;
+				console.log(array);
+				var i;
+				for(i = 0; i<4; i++) {
+					//if(array[i]) {
+						var param = i;
+						var item = document.getElementsByClassName("subMenu")[param];
+						
+				    	if(this.props.subMenuVisible[param]){
+				    		item.classList.remove("subMenuInitial");
+				    		item.classList.remove("subMenuHidden");
+				    		item.classList.add("subMenuShown");
+				    		this.props.subMenuVisible[param] = true;
+				    	} else {
+				    		/*item.classList.add("subMenuHidden");
+				    		item.classList.remove("subMenuShown");
+				    		this.props.subMenuVisible[param] = false;*/
+				    	}
+					//}
+				}
+  		}
+  	
+	render() {
+		
+				
+				/*for (value in array) {
+
+				}*/
+				/**/
+		return (
+			<div className="MenuMain">
+				<h3 onClick={() => this.handleMenuHeaderClick(0)}>КОМПАНИЯ<img className="menuArrow" src={menuArrow}/></h3>
+				<div className="subMenu subMenuInitial">
+					<h4>Преимущесва</h4>
+					<h4>Лицензии и свидетельства</h4>
+					<h4>Бонусы и акции</h4>
+					<h4>Отзывы наших клиентов</h4>
+					<h4>Приведи друга</h4>
+					<h4>Служба поддержки</h4>
+				</div>
+				<h3>ПЛАТФОРМА</h3>
+				<h3 onClick={() => this.handleMenuHeaderClick(1)}>ОБУЧЕНИЕ<img className="menuArrow" src={menuArrow}/></h3>
+				<div className="subMenu subMenuInitial">
+					<h4>Что такое Форекс</h4>
+					<h4>Ответы на вопросы</h4>
+					<h4>Как работает Форекс</h4>
+					<h4>Как торговать на Форекс?</h4>
+					<h4>Получение прибыли</h4>
+					<h4>Словарь терминов</h4>
+					<h4>Как выбрать брокера</h4>
+					<h4>Как выбрать платформу</h4>					
+					<h4>Стратегии на рыне Форекс</h4>
+					<h4>Стратегия "Три свечи"</h4>
+				</div>
+				<h3 onClick={() => this.handleMenuHeaderClick(2)}>АНАЛИТИКА<img className="menuArrow" src={menuArrow}/></h3>
+				<div className="subMenu subMenuInitial">
+					<h4>Форекс прогноз на сегодня</h4>
+					<h4>Новостная лента Форекс</h4>
+					<h4>Экономический календарь</h4>
+				</div>
+				<h3 onClick={() => this.handleMenuHeaderClick(3)}>ИНСТРУМЕНТЫ<img className="menuArrow" src={menuArrow}/></h3>
+				<div className="subMenu subMenuInitial">
+					<h4>Валюты</h4>
+					<h4>Индексы</h4>
+					<h4>Энергоносители</h4>
+					<h4>Акции</h4>
+					<h4>Драгоценные металлы</h4>
+					<h4>Таблица текущих спредов</h4>
+					<h4>Даты истечения фьючерсных контрактов</h4>
+				</div>
+				
+				
+			
+			</div>
+
+			);
+	}
+}
+
+class MenuRegistration extends React.Component {
+	render() {
+		return (
+			<div className="MenuRegistration">
+				<div className="tabs">
+					<div className="activeTab"><h3>Регистрация</h3></div>
+					<div><h3>Вход</h3></div>
+				</div>
+				<form>
+					<MenuField name={"Имя"} fieldId={"firstNameField"} pId={"firstNameP"}/>
+					<MenuField name={"Телефон"} fieldId={"secondNameField"} pId={"secondNameP"}/>
+					<MenuField name={"Страна"} fieldId={"countryField"} pId={"countryP"}/>
+					<MenuField name={"Email"} fieldId={"emailField"} pId={"emailP"}/>
+					<MenuField name={"Пароль"} fieldId={"passwordField"} pId={"passwordP"}/>
+					<MenuField name={"Пароль еще раз"} fieldId={"passwordConfirmField"} pId={"passwordConfirmP"}/>
+					<div className="agreeBlock">
+						<input type="checkbox" id="agree"/>
+						<p>Я прочитал и согласен с условиями предоставления сервиса и иными регламентирующими документами 770Capital. Эти документы являются неотъемлемой частью пользовательского соглашения</p>
+					</div>
+					<div className="RegistrationButton"><p>РЕГИСТРАЦИЯ</p></div>
+				</form>
+
+
+			</div>
+			);
+	}
+}
+
+class MenuField extends React.Component { 
+	constructor(props) {
+    super(props);
+    this.handleFieldFocus = this.handleFieldFocus.bind(this); 
+    this.handleFieldFocusOut = this.handleFieldFocusOut.bind(this);   
+  	}
+
+
+  	handleFieldFocus(param, paramField) {
+  		var itemP = document.getElementById(param);
+  		var itemField = document.getElementById(paramField);
+  		itemP.classList.remove("FieldSignInitional");
+  		itemP.classList.remove("FieldSignOutFocus");
+    	itemP.classList.add("MenuFieldOnFocus"); 
+    	itemField.focus();   	
+  	}
+  	handleFieldFocusOut(paramP, paramField) {
+  		var itemP = document.getElementById(paramP);
+  		var itemField = document.getElementById(paramField);
+  		//alert(itemField.value);
+  		if(itemField.value === "") {
+  			itemP.classList.remove("FieldSignInitional");
+  			itemP.classList.add("FieldSignOutFocus");
+  			itemP.classList.remove("MenuFieldOnFocus"); 
+  		}
+  	}
+	render() {
+		return(
+			<div className="MenuField" onClick={() => this.handleFieldFocus(this.props.pId,this.props.fieldId)} onBlur={() => this.handleFieldFocusOut(this.props.pId,this.props.fieldId)}>
+				<p className="FieldSignInitional FieldSign" id={this.props.pId}>{this.props.name}</p>
+				<input id={this.props.fieldId}  type="text" defaultValue="" onSelect={() => this.handleFieldFocus(this.props.pId,this.props.fieldId)} onBlur={() => this.handleFieldFocusOut(this.props.pId,this.props.fieldId)}/>
+			</div>
+			);
+	}
+}
+
 
 
 
@@ -403,10 +642,15 @@ class Main extends React.Component {
 
 
 class Page extends React.Component{
+	
+
+
 	render() {
 		return (
 			<div>
-				<Header/>
+				
+				<MenuRegistration/>
+				<Header />
 				<Main/>
 				<DoubleBlock/>
 				<Predictions/>
