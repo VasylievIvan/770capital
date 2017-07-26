@@ -55,6 +55,8 @@ class Header extends React.Component{
 	constructor(props) {
     super(props);
     this.state = {showMainMenu: false,
+    			showRightMenu: false,
+    			menuToShow : 'registration',
     			menuParams : {
     				'0' : false,
     				'1' : false,
@@ -63,22 +65,40 @@ class Header extends React.Component{
     			}};
     this.handleButtonMouseEnter = this.handleButtonMouseEnter.bind(this);
     this.handleMenuMouseLeave = this.handleMenuMouseLeave.bind(this);
-    this.handleButtonClick = this.handleButtonClick.bind(this);    
+    this.handleButtonClick = this.handleButtonClick.bind(this); 
+    this.handleMenuMouseLeave = this.handleMenuMouseLeave.bind(this);
+    this.handleRegButtonClick = this.handleRegButtonClick.bind(this);
+    this.handleRegTabClick = this.handleRegTabClick.bind(this);   
+    this.handleLoginTabClick = this.handleLoginTabClick.bind(this);   
   	}
 
   	handleButtonMouseEnter() {
-    //this.setState({showMainMenu: true});
+  		console.log("mouse enter");
+    this.setState({showMainMenu: true});
   	}
   	handleMenuMouseLeave() {
-    //this.setState({showMainMenu: false});
+  		console.log("mouse leave");
+    this.setState({showMainMenu: false});
   	}
   	handleButtonClick() {
   		this.setState({showMainMenu: this.state.showMainMenu === false});
   		console.log("click");
   	}
+  	handleRegButtonClick() {
+  		this.setState({showRightMenu: this.state.showRightMenu === false});
+  	}
+  	handleRegTabClick() {
+  		this.setState({menuToShow : 'registration'});
+  	}
+  	handleLoginTabClick() {
+  		this.setState({menuToShow : 'login'});
+  	}
+
+
 	render() {
 		return (
 			<div className="header">
+			{this.state.showRightMenu ?  this.state.menuToShow === 'registration' ?  <MenuRegistration clickHandler={this.handleLoginTabClick}/> : <MenuLogin clickHandler={this.handleRegTabClick}/> : <div/>}
 			{this.state.showMainMenu ? <MenuMain subMenuVisible = {this.state.menuParams} onMouseLeave={this.handleMenuMouseLeave} /> : <div/>}
 				<img src={menuButton} alt="" className="menu-button" onClick={this.handleButtonClick} onMouseEnter={this.handleButtonMouseEnter}/>
 				<img src={logo} alt="" className="logo" />
@@ -114,7 +134,7 @@ class Header extends React.Component{
 																			    			}})}><a href="#">Инструменты</a></li>
 				</ul>
 				<div className="contact">
-					<img src={phoneIcon} alt=""/>
+					<img src={phoneIcon} alt="" onClick={this.handleRegButtonClick}/>
 					<a href="tel:88005056704"><p className="phone">8 800 505 67 04</p></a>
 				</div>
 			</div>
@@ -315,9 +335,6 @@ class Main extends React.Component {
 		return (
 			<div className="main">
 				<div className="main-block">
-
-
-
 							<div className="side-features" id="left-side-features">
 								<div className="side-feature">
 									<img src={sideAdv1} alt=""/>
@@ -332,9 +349,6 @@ class Main extends React.Component {
 									<p>Работаем с 2010года</p>
 								</div>
 							</div>
-
-
-
 					<div className="content">
 						
 							<div className="slider">
@@ -521,7 +535,7 @@ class MenuMain extends React.Component {
 				}*/
 				/**/
 		return (
-			<div className="MenuMain">
+			<div className="MenuMain" onMouseLeave={this.props.onMouseLeave}>
 				<h3 onClick={() => this.handleMenuHeaderClick(0)}>КОМПАНИЯ<img className="menuArrow" src={menuArrow}/></h3>
 				<div className="subMenu subMenuInitial">
 					<h4>Преимущесва</h4>
@@ -574,13 +588,14 @@ class MenuRegistration extends React.Component {
 	render() {
 		return (
 			<div className="MenuRegistration">
-				<div className="tabs">
+				<div className="tabs" >
 					<div className="activeTab"><h3>Регистрация</h3></div>
-					<div><h3>Вход</h3></div>
+					<div onClick = {this.props.clickHandler}><h3>Вход</h3></div>
 				</div>
 				<form>
 					<MenuField name={"Имя"} fieldId={"firstNameField"} pId={"firstNameP"}/>
-					<MenuField name={"Телефон"} fieldId={"secondNameField"} pId={"secondNameP"}/>
+					<MenuField name={"Фамилия"} fieldId={"secondNameField"} pId={"secondNameP"}/>
+					<MenuField name={"Телефон"} fieldId={"phoneField"} pId={"phoneP"}/>
 					<MenuField name={"Страна"} fieldId={"countryField"} pId={"countryP"}/>
 					<MenuField name={"Email"} fieldId={"emailField"} pId={"emailP"}/>
 					<MenuField name={"Пароль"} fieldId={"passwordField"} pId={"passwordP"}/>
@@ -598,11 +613,37 @@ class MenuRegistration extends React.Component {
 	}
 }
 
+class MenuLogin extends React.Component {
+	render() {
+		return (
+			<div className="MenuLogin">
+				<div className="tabs">
+					<div onClick = {this.props.clickHandler}><h3>Регистрация</h3></div>
+					<div className="activeTab"><h3>Вход</h3></div>
+				</div>
+				<form>
+					
+					<MenuField name={"Email"} fieldId={"emailField"} pId={"emailP"}/>
+					<MenuField name={"Пароль"} fieldId={"passwordField"} pId={"passwordP"}/>
+					
+					<div className="LoginButton"><p>ВОЙТИ В СИСТЕМУ</p></div>
+				</form>
+
+
+			</div>
+			);
+	}
+}
+
 class MenuField extends React.Component { 
 	constructor(props) {
     super(props);
     this.handleFieldFocus = this.handleFieldFocus.bind(this); 
-    this.handleFieldFocusOut = this.handleFieldFocusOut.bind(this);   
+    this.handleFieldFocusOut = this.handleFieldFocusOut.bind(this);
+    this.regex = {
+    	"emailField" : /^([a-zA-Z0-9_.-])+@([a-zA-Z0-9_.-])+\.([a-zA-Z])+([a-zA-Z])+/,
+    	"phoneField" : /^\+?([0-9])+$/
+    }   
   	}
 
 
@@ -619,16 +660,47 @@ class MenuField extends React.Component {
   		var itemField = document.getElementById(paramField);
   		//alert(itemField.value);
   		if(itemField.value === "") {
+  			itemP.classList.remove("SignError");
+  			itemP.classList.remove("SignCorrect");
   			itemP.classList.remove("FieldSignInitional");
   			itemP.classList.add("FieldSignOutFocus");
   			itemP.classList.remove("MenuFieldOnFocus"); 
+  			itemField.classList.add("FieldInitial");
+  			itemField.classList.remove("FieldCorrect");
+  			itemField.classList.remove("FieldError");
+  		} else {
+  			
+  			if(this.regex[paramField] === undefined) {
+  				itemField.classList.remove("FieldInitial");
+  				itemField.classList.add("FieldCorrect");
+  				itemP.classList.remove("FieldSignInitional");
+  				itemP.classList.remove("SignError");
+  				itemP.classList.add("SignCorrect");
+  			} else {
+  				if(this.regex[paramField].test(itemField.value)) {
+  					itemField.classList.remove("FieldInitial");
+  					itemField.classList.add("FieldCorrect");
+  					itemP.classList.remove("FieldSignInitional");
+  					itemP.classList.remove("SignError");
+  					itemP.classList.add("SignCorrect");
+  					itemField.classList.remove("FieldError");
+  				} else {
+  					itemP.classList.remove("SignCorrect");
+  					itemP.classList.remove("FieldSignInitional");
+  					itemP.classList.add("SignError");
+  					itemField.classList.remove("FieldInitial");
+  					itemField.classList.remove("FieldCorrect");
+  					itemField.classList.add("FieldError");
+
+  				}
+  			}
   		}
   	}
 	render() {
 		return(
 			<div className="MenuField" onClick={() => this.handleFieldFocus(this.props.pId,this.props.fieldId)} onBlur={() => this.handleFieldFocusOut(this.props.pId,this.props.fieldId)}>
 				<p className="FieldSignInitional FieldSign" id={this.props.pId}>{this.props.name}</p>
-				<input id={this.props.fieldId}  type="text" defaultValue="" onSelect={() => this.handleFieldFocus(this.props.pId,this.props.fieldId)} onBlur={() => this.handleFieldFocusOut(this.props.pId,this.props.fieldId)}/>
+				<input id={this.props.fieldId} className="FieldInitial" type="text" defaultValue="" onSelect={() => this.handleFieldFocus(this.props.pId,this.props.fieldId)} onBlur={() => this.handleFieldFocusOut(this.props.pId,this.props.fieldId)}/>
 			</div>
 			);
 	}
@@ -649,7 +721,7 @@ class Page extends React.Component{
 		return (
 			<div>
 				
-				<MenuRegistration/>
+				
 				<Header />
 				<Main/>
 				<DoubleBlock/>

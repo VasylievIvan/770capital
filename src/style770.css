@@ -5,6 +5,8 @@ body {
 }
 
 .header {
+	position: fixed;
+	width: 100%;
 	background-color: #14508a;
 	display: flex;
 	flex-direction: row;
@@ -75,6 +77,7 @@ body {
 
 
 .MenuMain {
+	height: 900px;
 	width: 280px;
 	position: absolute;
 	background-color: #fff;
@@ -83,7 +86,9 @@ body {
 	-moz-box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.75);
 	box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.75);
 	padding-bottom: 30px;
+	overflow: scroll;
 }
+.MenuMain::-webkit-scrollbar { width: 0; }
 .MenuMain h3 {
 	margin-left: 50px;
 	font-size: 16px;
@@ -106,11 +111,11 @@ body {
 }
 .subMenuHidden {
 	overflow: hidden;
-	animation: subMenuCloseAnimation 1s;
+	/*animation: subMenuCloseAnimation 0.2s;*/
 	max-height: 0px;
 }
 .subMenuShown {
-	animation: subMenuOpenAnimation 1s;
+	/*animation: subMenuOpenAnimation 0.2s;*/
 }
 @keyframes subMenuOpenAnimation {
 	from {max-height: 0px;}
@@ -132,6 +137,7 @@ body {
 
 
 .MenuRegistration {
+	height: 920px;
 	width: 350px;
 	position: absolute;
 	background-color: #fff;
@@ -186,6 +192,7 @@ body {
 	margin-top: 35px; 
 	font-size: 16px;
 }
+
 @keyframes FieldSignOnFocusAnimation {
 	from {margin-top: 35px; font-size: 16px;}
 	to {margin-top: 15px; font-size: 12px;}
@@ -197,12 +204,27 @@ body {
 
 .MenuField input {
 	border: none;
-	border-bottom: 1px solid black;
+	
 	width: 270px;
 	margin-top: 35px;
 	font-size: 16px;
 	user-select: none; 
  	outline: none;
+}
+input.FieldInitial {
+	border-bottom: 1px solid black;
+}
+input.FieldCorrect {
+	border-bottom: 1px solid #009e3f;
+}
+input.FieldError {
+	border-bottom: 1px solid #ff5a4b;
+}
+.SignCorrect {
+	color: #009e3f;	
+}
+.SignError {
+	color: #ff5a4b;
 }
 .MenuRegistration .agreeBlock {
 	width: 270px;
@@ -240,16 +262,68 @@ body {
 }
 
 
+.MenuLogin {
+	height: 920px;
+	width: 350px;
+	position: absolute;
+	background-color: #fff;
+	top: 70px;
+	right: 0;
+	-webkit-box-shadow: -2px 2px 5px 0px rgba(0,0,0,0.75);
+	-moz-box-shadow: -2px 2px 5px 0px rgba(0,0,0,0.75);
+	box-shadow: -2px 2px 5px 0px rgba(0,0,0,0.75);
+}
+.MenuLogin .tabs {
+	display: flex;
+	flex-direction: row;
+	height: 50px;
+	justify-content: space-between;
+}
+.MenuLogin .tabs div {
+	display: flex;
+	width: 100%;
+	background-color: #bfbfbf;
+}
+.MenuLogin .tabs div h3 {
+	margin: auto;
+}
+.MenuLogin .tabs div.activeTab {
+	background-color: #ffffff;
+}
+.MenuLogin form {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin-top: 40px;
+}
+.LoginButton {
+	width: 170px;
+	height: 50px;
+	display: flex;
+	border-radius: 5px;
+	background-color: #0bd200;
+	margin-top: 20px;
+	margin-bottom: 285px;
+}
+.LoginButton p {
+	margin: auto;
+	color: #ffffff;
+	font-weight: 500;
+}
+
+
 
 
 
 
 .main {
+	
 	background-image: url('./img/main-background.png');
 	    background-position-y: -70px;
 
 }
 .main-block {
+	padding-top: 70px;
 	display: flex;
 	flex-direction: row;
 	justify-content: space-around;
@@ -277,6 +351,7 @@ body {
 	margin-right: 14.5%; 
 }
 .slider {
+
 	display: flex;
 	flex-direction: column;
 	align-items: center;
